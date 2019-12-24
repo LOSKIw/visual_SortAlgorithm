@@ -128,7 +128,7 @@ function animation(oUl) {
 
         }
 
-    }, 500);
+    }, 1000);
 
 }
 
