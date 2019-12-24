@@ -1,4 +1,4 @@
-function initNum1() {
+function initNumBubble() {
 
     var numArr = [];
 
