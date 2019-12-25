@@ -135,7 +135,9 @@ function animation(oUl,arr) {
 }
 
 function stop(){
-    clearInterval(timer);
+    if(this.timer!=null){
+        clearInterval(this.timer);
+    }
 }
 
 function stepAnimation(oUl,arr) {

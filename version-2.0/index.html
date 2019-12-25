@@ -15,6 +15,7 @@
 <script type="text/javascript" src="js/bubbleSort.js"></script>
 <script type="text/javascript" src="js/chooseSort.js"></script>
 <script type="text/javascript" src="js/insertSort.js"></script>
+<script type="text/javascript" src="js/quickSort.js"></script>
 <script>
 $(document).ready(function(){
 	$("#createArr").click(function(){
@@ -140,11 +141,12 @@ $(document).ready(function(){
 		<input name='sortselect' type="radio" value="冒泡排序">冒泡排序
 		 <input name='sortselect' type="radio" value="选择排序">选择排序
 		 <input name='sortselect' type="radio" value="插入排序">插入排序
+		 <input name='sortselect' type="radio" value="快速排序">快速排序
 	</div>
 
 	<script>
 		document.getElementById('btn1').addEventListener('click', e1 => {
-		var no = e1.target.getAttribute('value');
+		let no = e1.target.getAttribute('value');
 		this.choice=no;
 		if (no=="冒泡排序"){
 			initBubbleText();
@@ -157,6 +159,10 @@ $(document).ready(function(){
 		else if(no=="插入排序"){
 			initInsertText();
 			this.Arr=initNumInsert(this.arr);
+		}
+		else if(no=="快速排序"){
+			initQuickText();
+			this.Arr=initNumQuick(this.arr);
 		}})
 	</script>
 	<div class="form-group">
@@ -173,16 +179,20 @@ $(document).ready(function(){
 			init(this.arr,oUl);
 
 			if (this.choice=="冒泡排序"){
-			initBubbleText();
-			this.Arr=initNumBubble(this.arr);
+				initBubbleText();
+				this.Arr=initNumBubble(this.arr);
 			}
-			else if(no=="选择排序"){
+			else if(this.choice=="选择排序"){
 				initChooseText();
 				this.Arr=initNumChoose(this.arr);
 			}
-			else if(no=="插入排序"){
+			else if(this.choice=="插入排序"){
 				initInsertText();
 				this.Arr=initNumInsert(this.arr);
+			}
+			else if(this.choice=="快速排序"){
+				initQuickText();
+				this.Arr=initNumQuick(this.arr);
 			}
 			})
 		</script>
@@ -202,7 +212,7 @@ $(document).ready(function(){
 		<input id='funcButton' name='func' type="button" value="开始运行"></input>
 		<script>
 			document.getElementById('btn2').addEventListener('click', e2 => {
-			var no = e2.target.getAttribute('value');
+			let no = e2.target.getAttribute('value');
 			if (no=="整体执行"){
 				let e=document.getElementById('funcButton');
 				e.setAttribute("value","开始运行");
@@ -214,7 +224,7 @@ $(document).ready(function(){
 		</script>
 		<script>
 			document.getElementById('funcButton').addEventListener('click', e3 => {
-			var no = e3.target.getAttribute('value');
+			let no = e3.target.getAttribute('value');
 			let oUl = document.getElementsByClassName("sort_li")[0];
 			if (no=="开始运行"){
 				let e=document.getElementById('funcButton');
