@@ -10,7 +10,9 @@ function initArr() {
     //获取排序数字的个数
 
     var num = document.getElementById("form-control").value;
-
+    if(num>10){
+        return ;
+    }
     var numArray = document.getElementById("num-input");
 
     numArr.length = 0;
@@ -27,6 +29,19 @@ function initArr() {
 
     return numArr;
 
+}
+
+function preArr(){
+    var numArray = document.getElementById("num-input").value;
+    if(numArray==""){
+        return ;
+    }
+    var array = [];
+    var arr = numArray.split(',');
+    for(var i = 0; i<arr.length; i++) {
+        array.push(parseFloat(arr[i]));
+    }
+    return array;
 }
 
 //柱表初始化
@@ -60,7 +75,8 @@ function sortDom(arr, num1 , num2 , index1 , index2 , flag , oUl , line) {
 
     let i,
         html = "",
-        className = "";
+        className = "",
+        heap = "";
 
     let pNodes = document.getElementById('text').getElementsByTagName('p');
     for(let cur=0;cur<pNodes.length;cur++){
@@ -72,7 +88,7 @@ function sortDom(arr, num1 , num2 , index1 , index2 , flag , oUl , line) {
         if( flag == 3 ){
             className = "";
         }
-        else if( flag == 2 ){
+        else if( flag == 2||flag == 5 ){
             if( i == num1 ){
                 className = " swapRight";
             }
@@ -86,7 +102,7 @@ function sortDom(arr, num1 , num2 , index1 , index2 , flag , oUl , line) {
                 className = "";
             }
         }
-        else if( flag == 1 ){
+        else if( flag == 1||flag == 4 ){
             if( i == num1 || i == num2 ){
                 className = " compare";
             }
@@ -97,6 +113,10 @@ function sortDom(arr, num1 , num2 , index1 , index2 , flag , oUl , line) {
                 className = "";
             }
         }
+        if(flag == 4 || flag == 5){
+            draw(arr,250,110,flag,num1,num2,index1,index2);
+        }
+
         html += '<li class="' + className + '" style="height: ' + arr[i] * 10 + 'px"><p>' + arr[i] + '</p></li>';
     }
 
@@ -118,20 +138,33 @@ function animation(oUl,arr) {
         if (Arr.length > 0) {
 
             this.sortDom(Arr[0][0], Arr[0][1], Arr[0][2], Arr[0][3] , Arr[0][4] , Arr[0][5] , oUl , Arr[0][6]);
-            if(Arr[0][5]==2){
+            if(Arr[0][5]==2||Arr[0][5]==5){
                 $(".swapRight").animate({left: '+'+(Arr[0][2]-Arr[0][1])*60+'px'}, "slow"); 
                 $(".swapLeft").animate({right: '+'+(Arr[0][2]-Arr[0][1])*60+'px'}, "slow"); 
+            }
+            if(Arr[0][5]==5){
+                let up=document.getElementsByClassName("heapdown")[0],
+                    down=document.getElementsByClassName("heapup")[0];
+                y1=up.offsetTop;
+                y2=down.offsetTop;
+                x1=up.offsetLeft;
+                x2=down.offsetLeft;
+                $(".heapdown").animate({top: y2}, "300"); 
+                $(".heapup").animate({top: y1}, "300"); 
+                $(".heapdown").animate({left: x2}, "300"); 
+                $(".heapup").animate({left: x1}, "300"); 
             }
             Arr.shift();
 
         } else {
 
             clearInterval(this.timer);
-
+            let e=document.getElementById('funcButton');
+            e.setAttribute("value","开始运行");
         }
 
     }, 1000);
-
+    
 }
 
 function stop(){
@@ -145,9 +178,21 @@ function stepAnimation(oUl,arr) {
     if (Arr.length > 0) {
 
         this.sortDom(Arr[0][0], Arr[0][1], Arr[0][2], Arr[0][3] , Arr[0][4] , Arr[0][5] , oUl , Arr[0][6]);
-        if(Arr[0][5]==2){
+        if(Arr[0][5]==2||Arr[0][5]==5){
             $(".swapRight").animate({left: '+'+(Arr[0][2]-Arr[0][1])*60+'px'}, "slow"); 
             $(".swapLeft").animate({right: '+'+(Arr[0][2]-Arr[0][1])*60+'px'}, "slow"); 
+        }
+        if(Arr[0][5]==5){
+            let up=document.getElementsByClassName("heapdown")[0],
+                down=document.getElementsByClassName("heapup")[0];
+            y1=up.offsetTop;
+            y2=down.offsetTop;
+            x1=up.offsetLeft;
+            x2=down.offsetLeft;
+            $(".heapdown").animate({top: y2}, "300"); 
+            $(".heapup").animate({top: y1}, "300"); 
+            $(".heapdown").animate({left: x2}, "300"); 
+            $(".heapup").animate({left: x1}, "300"); 
         }
         Arr.shift();
 

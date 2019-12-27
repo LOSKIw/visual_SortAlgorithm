@@ -17,20 +17,49 @@ function initHeapText(){
         <p>&nbsp&nbsp&nbsp&nbspshift heap</p>';
 }
 
-function draw(list,x,y){
+function draw(list,x,y,flag,num1,num2,index1,index2){
     this.arr=list;
     let len=this.arr.length,
         temp=1,
         html="",
+        classname="",
         nodeList=new Array(len),
         xList=new Array(len),
         yList=new Array(len);
+    
     let changeH=parseInt(Math.log(len)/Math.log(2));
     if(len==0){
         return ;
     }
     else{
-        let temp='<div class="node" style="left:+'+(x)+'px;top:+'+(y)+'px">'+this.arr[0]+'</div>';
+
+        if(flag == 5 ){
+            if( 0 == num1 ){
+                className = " heapdown";
+            }
+            else if( 0 == num2 ){
+                className = " heapup";
+            }
+            else if(0 > index1 && 0 <= index2 ){
+                className = " heapcomplete";
+            }
+            else{
+                className = " node";
+            }
+        }
+        else if(flag == 4 ){
+            if( 0 == num1 || 0 == num2 ){
+                className = " heapcompare";
+            }
+            else if(0 > index1 && 0 <= index2 ){
+                className = " heapcomplete";
+            }
+            else{
+                className = " node";
+            }
+        }
+
+        let temp='<div class="'+className+'" style="left:+'+(x)+'px;top:+'+(y)+'px">'+this.arr[0]+'</div>';
         let panel = document.getElementById("panel");
         panel.innerHTML=temp;
         html += temp;
@@ -40,7 +69,7 @@ function draw(list,x,y){
         yList[0]=y;
     }
     
-    for(let i=1;i<len/2;i++){
+    for(let i=1;i<=len/2;i++){
         let x=xList[i-1],
             y=yList[i-1];
         for(let j=0;j<2;j++){
@@ -50,7 +79,34 @@ function draw(list,x,y){
                 tempH=changeH-newy+1;
                 let newx=x-tempH*20*(1-2*j);
                 xList[2*i+j-1]=newx;
-                let temp='<div class="node" style="left:+'+(newx)+'px;top:+'+(yList[0]+(newy)*20)+'px">'+this.arr[2*i+j-1]+'</div>';
+
+                if(flag == 5 ){
+                    if( 2*i+j-1 == num1 ){
+                        className = " heapdown";
+                    }
+                    else if( 2*i+j-1 == num2 ){
+                        className = " heapup";
+                    }
+                    else if(2*i+j-1 > index1 && 2*i+j-1 <= index2 ){
+                        className = " heapcomplete";
+                    }
+                    else{
+                        className = " node";
+                    }
+                }
+                else if(flag == 4 ){
+                    if( 2*i+j-1 == num1 || 2*i+j-1 == num2 ){
+                        className = " heapcompare";
+                    }
+                    else if(2*i+j-1 > index1 && 2*i+j-1 <= index2 ){
+                        className = " heapcomplete";
+                    }
+                    else{
+                        className = " node";
+                    }
+                }
+
+                let temp='<div class="'+className+'" style="left:+'+(newx)+'px;top:+'+(yList[0]+(newy)*20)+'px">'+this.arr[2*i+j-1]+'</div>';
                 nodeList[2*i+j-1]=temp;
                 html += temp;
             }
@@ -82,16 +138,16 @@ function swapHeap(A, i, j) {
 //顶堆
 function shiftDown(A, i, length, flag) {
     let temp = A[i]; // 当前父节点
-    this.pushArr(A.slice(), i , -1 , -1 , -1 , 1 , flag*flag);
+    this.pushArr(A.slice(), i , -1 , length-flag+1 , this.arr.length ,4 , flag*flag);
     // j<length 的目的是对结点 i 以下的结点全部做顺序调整
     for(let j = 2*i+1; j<length; j = 2*j+1) {
         temp = A[i];  // 将 A[i] 取出，整个过程相当于找到 A[i] 应处于的位置
         if(j+1 < length && A[j] < A[j+1]) { 
             j++;   // 找到两个孩子中较大的一个，再与父节点比较
         }
-        this.pushArr(A.slice(), i , j , -1 , -1 , 1 , flag*flag);
+        this.pushArr(A.slice(), i , j , length-flag+1 , this.arr.length ,4 , flag*flag);
         if(temp < A[j]) {
-            this.pushArr(A.slice(), i , j , -1 , -1 , 2 , flag*flag);
+            this.pushArr(A.slice(), i , j , length-flag+1 , this.arr.length , 5 , flag*flag);
             swapHeap(A, i, j) // 如果父节点小于子节点:交换；否则跳出
             i = j;  // 交换后，temp 的下标变为 j
         } else {
@@ -102,20 +158,18 @@ function shiftDown(A, i, length, flag) {
   
   // 堆排序
 function sort_heap(A) {
-    this.pushArr(A.slice(), -1 , -1 , -1 , -1 , 1 , 1);
-    // 初始化大顶堆，从第一个非叶子结点开始
+    this.pushArr(A.slice(), -1 , -1 , -1 , -1 , 4 , 1);
+
     for(let i = Math.floor(A.length/2-1); i>=0; i--) {
         shiftDown(A, i, A.length,1);
     }
-    // 排序，每一次for循环找出一个当前最大值，数组长度减一
+
     for(let i = Math.floor(A.length-1); i>0; i--) {
-        this.pushArr(A.slice(), 0 , i , i , A.length-1 , 2 , 3);
-        swapHeap(A, 0, i); // 根节点与最后一个节点交换
-        shiftDown(A, 0, i,2); // 从根节点开始调整，并且最后一个结点已经为当
-                            // 前最大值，不需要再参与比较，所以第三个参数
-                            // 为 i，即比较到最后一个结点前一个即可
+        this.pushArr(A.slice(), 0 , i , i-1 , A.length , 5 , 3);
+        swapHeap(A, 0, i); 
+        shiftDown(A, 0, i,2); 
     }
-    this.pushArr(A.slice(), -1 , -1 , i , A.length-1 , 1 , 4);
+    this.pushArr(A.slice(), -1 , -1 , -1 , A.length , 4 , 4);
 }
 
 //生成动画的元素存储

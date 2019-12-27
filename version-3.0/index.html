@@ -17,7 +17,6 @@
 <script type="text/javascript" src="js/insertSort.js"></script>
 <script type="text/javascript" src="js/quickSort.js"></script>
 <script type="text/javascript" src="js/heap.js"></script>
-<script type="text/javascript" src="js/heapAnimate.js"></script>
 <script>
 $(document).ready(function(){
 	$("#createArr").click(function(){
@@ -166,14 +165,14 @@ $(document).ready(function(){
         position: absolute;
         height: 20px;
         width: 20px;
-        background: blue;
+        background: rgb(0, 238, 255);
         text-align:center;
     }
 	.heapdown{
         position: absolute;
         height: 20px;
         width: 20px;
-        background: blue;
+        background: rgb(0, 238, 255);
         text-align:center;
     }
 	.heapcompare{
@@ -181,6 +180,13 @@ $(document).ready(function(){
         height: 20px;
         width: 20px;
         background: red;
+        text-align:center;
+    }
+	.heapcomplete{
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        background: yellow;
         text-align:center;
     }
 	</style>
@@ -195,7 +201,8 @@ $(document).ready(function(){
 		 <input name='sortselect' type="radio" value="快速排序">快速排序
 		 <input name='sortselect' type="radio" value="堆排序">堆排序
 	</div>
-
+	<script>this.choice="";
+	</script>
 	<script>
 		document.getElementById('btn1').addEventListener('click', e1 => {
 		let no = e1.target.getAttribute('value');
@@ -225,14 +232,18 @@ $(document).ready(function(){
 	</script>
 	<div class="form-group">
 
-        <label for="arrLen">数组长度：</label>
+        <label for="arrLen">数组长度(最长为10,数组元素大小区间为(1,50))：</label>
 
         <input name="arrLen" class="form-control" id="form-control" value='10' placeholder="请输入数组长度">
 
-		<input value='生成数组' id="createArr" onclick="initArr()" type="button">
+		<input value='随机生成数组' id="createArr" onclick="initArr()" type="button">
+		<input value='用户输入数组' id="preArr" onclick="preArr()" type="button">
 		<script>
 			document.getElementById('createArr').addEventListener('click', e0 => {
-			this.arr=initArr();
+			this.arr=preArr();
+			if(this.arr.length==0){
+				return ;
+			}
 			let oUl = document.getElementsByClassName("sort_li")[0];
 			init(this.arr,oUl);
 
@@ -253,7 +264,33 @@ $(document).ready(function(){
 				this.Arr=initNumQuick(this.arr);
 			}
 			else if(this.choice=="堆排序"){
-				draw(this.arr,250,110);
+				draw(this.arr,250,110,4,-1,-1,-1,-1);
+				initHeapText();
+				this.Arr=initNumHeap(this.arr);
+			}})
+			document.getElementById('preArr').addEventListener('click', e0 => {
+			this.arr=preArr();
+			let oUl = document.getElementsByClassName("sort_li")[0];
+			init(this.arr,oUl);
+
+			if (this.choice=="冒泡排序"){
+				initBubbleText();
+				this.Arr=initNumBubble(this.arr);
+			}
+			else if(this.choice=="选择排序"){
+				initChooseText();
+				this.Arr=initNumChoose(this.arr);
+			}
+			else if(this.choice=="插入排序"){
+				initInsertText();
+				this.Arr=initNumInsert(this.arr);
+			}
+			else if(this.choice=="快速排序"){
+				initQuickText();
+				this.Arr=initNumQuick(this.arr);
+			}
+			else if(this.choice=="堆排序"){
+				draw(this.arr,250,110,4,-1,-1,-1,-1);
 				initHeapText();
 				this.Arr=initNumHeap(this.arr);
 			}})
@@ -263,7 +300,7 @@ $(document).ready(function(){
 
     <div class="form-group">
 
-        <label for="arr">排序前数组：</label><textarea name="arr" class="num-input" id="num-input" rows="1" cols="30" readonly resize: none></textarea>
+        <label for="arr">排序前数组：</label><textarea name="arr" class="num-input" id="num-input" rows="1" cols="30" resize: none></textarea>
 		<br />
 		<label for="arr">排序后数组：</label><textarea name="arr" class="num-out" id="num-out" rows="1" cols="30" readonly ></textarea>
 		
@@ -288,6 +325,9 @@ $(document).ready(function(){
 			document.getElementById('funcButton').addEventListener('click', e3 => {
 			let no = e3.target.getAttribute('value');
 			let oUl = document.getElementsByClassName("sort_li")[0];
+			if(this.choice==""||this.arr.length==0){
+				return ;
+			}
 			if (no=="开始运行"){
 				let e=document.getElementById('funcButton');
 				e.setAttribute("value","暂停");
